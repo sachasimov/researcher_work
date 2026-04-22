@@ -570,3 +570,139 @@ Extract from this investigation query:
 
 Return JSON: {"subject": "...", "language": "...", "country_code": "..."}
 """.strip()
+
+# ---------------------------------------------------------------------------
+# Depth-specific prompt augmentations
+# ---------------------------------------------------------------------------
+# Appended to base prompts based on research_depth. Each tier pushes the model
+# to use its budget more effectively:
+#   M  → quality per lead (diverse queries, prefer primary sources)
+#   L  → cross-validation and quantitative rigor
+#   XL → exhaustive coverage, strict review, leave no stone unturned
+
+# ---- M augmentations: focus on query quality and source authority ----------
+
+M_PLAN_AUGMENTATION = """
+
+## QUALITY-FOCUSED RESEARCH MODE
+
+You have a moderate search budget. Make every lead count by writing high-quality, diverse queries.
+
+### Planning rules for quality mode
+
+- For each lead, write **2-3 search queries** using **varied formulations**:
+  - At least one query targeting an **authoritative primary source** (official website, regulatory filing, issuer factsheet, Wikipedia).
+  - At least one query approaching the topic from a **different angle** (news, analysis, comparison, data aggregator).
+- Prefer leads that target **specific, verifiable data** (numbers, dates, names, fees, holdings) over leads seeking general narrative.
+- Avoid redundant leads — if two leads would run very similar queries, merge them into one with better queries.
+""".strip()
+
+M_REVIEW_AUGMENTATION = """
+
+## QUALITY-FOCUSED REVIEW
+
+When assessing coverage:
+- **covered** requires at least 1 source with specific data (numbers, dates, names).
+- **partial** means evidence exists but lacks specificity or comes only from low-authority sources. If budget remains, prefer generating a focused lead to find a **primary source** rather than accepting weak evidence.
+- Prioritize filling gaps with **data-rich sources** (official product pages, filings, reputable data aggregators) over general news articles.
+""".strip()
+
+M_ANSWER_AUGMENTATION = """
+
+## QUALITY-FOCUSED RESEARCH MODE
+
+Focus on finding high-quality sources:
+
+- For each search, try to find the **most authoritative source available** (official pages, regulatory filings, reputable data providers) rather than settling for the first result.
+- When you find a claim in a secondary source (news article, blog), try to **verify it from the primary source** before citing it.
+- Use varied query formulations — if a direct query doesn't work, try searching for the specific data point from a different angle.
+""".strip()
+
+# ---- L augmentations: cross-validation and quantitative rigor --------------
+
+L_PLAN_AUGMENTATION = """
+
+## THOROUGH RESEARCH MODE
+
+You have a substantial search budget. Use it to produce well-sourced, cross-validated findings with quantitative evidence.
+
+### Planning rules for thorough mode
+
+- For each lead, write **2-3 search queries** using **varied formulations**, ensuring at least one targets a **primary/official source** and one targets **quantitative data** (statistics, performance figures, fee schedules, financial metrics).
+- Include at least one lead specifically focused on **numerical comparisons or historical data** when the query involves evaluating or ranking options.
+- Include at least one lead targeting a **contrarian or risk-oriented perspective** — what could go wrong, what are the downsides, what do critics say.
+- Avoid redundant leads. Before adding a lead, check whether an existing lead already covers that angle.
+""".strip()
+
+L_REVIEW_AUGMENTATION = """
+
+## THOROUGH REVIEW — CROSS-VALIDATION REQUIRED
+
+Apply stricter coverage standards:
+- **covered** requires at least **2 independent sources** with specific data points. A single source, even a good one, is only **partial**.
+- **partial** means only 1 source or evidence that lacks quantitative specificity. If budget remains, generate a lead to find a **second confirming source** or **harder data**.
+- **missing** must trigger new leads.
+- Before declaring `is_sufficient: true`, verify that **key quantitative claims** (fees, AUM, performance, holdings) are supported by at least 2 sources. Narrative-only coverage of data-heavy dimensions is not sufficient.
+""".strip()
+
+L_ANSWER_AUGMENTATION = """
+
+## THOROUGH RESEARCH MODE
+
+You must produce well-sourced, cross-validated answers:
+
+- Perform **at least 4 web searches** before attempting an answer.
+- Scrape **at least 2 pages** for detailed evidence.
+- For key factual claims, **cross-validate from at least 2 independent sources**. If you only found a fact in one source, search specifically to confirm or contradict it before citing it.
+- Actively seek **quantitative data** (numbers, percentages, dates, rankings) rather than settling for qualitative descriptions.
+- If sources conflict, investigate the discrepancy rather than picking one — note the conflict in your answer.
+""".strip()
+
+# ---- XL augmentations: exhaustive coverage ---------------------------------
+
+XL_PLAN_AUGMENTATION = """
+
+## EXHAUSTIVE RESEARCH MODE
+
+You are operating in EXHAUSTIVE research mode. Your goal is to produce the most comprehensive investigation possible. You have a large search budget — USE IT.
+
+### Planning rules for exhaustive mode
+
+- Generate **at least 10 leads** (up to 20). Cover every plausible dimension of the query.
+- For each lead, generate **3-4 search queries** (not just 2). Use varied query formulations:
+  - One broad contextual query
+  - One precise, specific query targeting authoritative sources
+  - One query in the local language (if applicable)
+  - One query targeting a different angle or source type (academic, news, official)
+- Include **scrape_urls** whenever you can infer likely URLs for official sources, Wikipedia pages, government databases, or corporate filings.
+- Create leads that explore **adjacent and secondary dimensions** — not just the obvious ones. Think about what a thorough analyst would want to know beyond the surface-level answer.
+- If a dimension could be split into sub-dimensions, split it. Breadth AND depth matter.
+""".strip()
+
+XL_REVIEW_AUGMENTATION = """
+
+## EXHAUSTIVE RESEARCH MODE — STRICT REVIEW
+
+You are reviewing research in EXHAUSTIVE mode. Apply stricter standards:
+
+- **covered** requires at least 3 independent sources with specific data points (numbers, dates, names, URLs).
+- **partial** means only 1-2 sources or evidence that lacks specificity. This is NOT acceptable for core dimensions in exhaustive mode — generate new leads to fill the gap.
+- **missing** means no meaningful evidence. This MUST trigger new leads.
+- Set `is_sufficient: true` ONLY when ALL dimensions are **covered** (not partial, not missing).
+- If budget remains and ANY dimension is only **partial**, generate new leads to strengthen coverage. Do NOT settle for partial coverage when budget allows deeper investigation.
+- Generate **2-3 search queries per new lead**, using different angles from previous attempts.
+""".strip()
+
+XL_ANSWER_AUGMENTATION = """
+
+## EXHAUSTIVE RESEARCH MODE
+
+You are operating in EXHAUSTIVE mode. You must be exceptionally thorough:
+
+- Perform **at least 6 web searches** (not just 3) before attempting an answer.
+- Scrape **at least 3 pages** for detailed evidence.
+- Cross-validate your answer from **at least 3 independent sources**.
+- If your first few searches don't find strong evidence, try completely different query formulations, different languages, and different source types.
+- Do NOT stop searching early just because you found one plausible answer. Verify it from multiple angles.
+- Use your full search budget. Early stopping with remaining budget is a failure mode in exhaustive research.
+""".strip()

@@ -10,10 +10,14 @@ from loguru import logger
 
 from linkup_brain import enums, models
 
-from ._constants import EXECUTOR_SOFT_TIMEOUT
+from ._constants import EXECUTOR_SOFT_TIMEOUT_BY_DEPTH
 from ._lead_executor import LeadExecutor
 from ._prompts import (
     EXTRACT_CONTEXT_SYSTEM_PROMPT,
+    L_PLAN_AUGMENTATION,
+    L_REVIEW_AUGMENTATION,
+    M_PLAN_AUGMENTATION,
+    M_REVIEW_AUGMENTATION,
     PLAN_SYSTEM_PROMPT_INVESTIGATE,
     PLAN_SYSTEM_PROMPT_RESEARCH,
     PLAN_USER_PROMPT,
@@ -21,6 +25,8 @@ from ._prompts import (
     REVIEW_USER_PROMPT,
     SYNTHESIZE_SYSTEM_PROMPT,
     SYNTHESIZE_USER_PROMPT,
+    XL_PLAN_AUGMENTATION,
+    XL_REVIEW_AUGMENTATION,
 )
 from ._types import (
     ExtractedContext,
@@ -36,6 +42,19 @@ from ._utils import filter_search_results
 
 if TYPE_CHECKING:
     from linkup_brain import llms, toolbox
+
+PLAN_AUGMENTATION_BY_DEPTH: dict[enums.ResearchDepth, str | None] = {
+    enums.ResearchDepth.S: None,
+    enums.ResearchDepth.M: M_PLAN_AUGMENTATION,
+    enums.ResearchDepth.L: L_PLAN_AUGMENTATION,
+    enums.ResearchDepth.XL: XL_PLAN_AUGMENTATION,
+}
+REVIEW_AUGMENTATION_BY_DEPTH: dict[enums.ResearchDepth, str | None] = {
+    enums.ResearchDepth.S: None,
+    enums.ResearchDepth.M: M_REVIEW_AUGMENTATION,
+    enums.ResearchDepth.L: L_REVIEW_AUGMENTATION,
+    enums.ResearchDepth.XL: XL_REVIEW_AUGMENTATION,
+}
 
 
 class PipelineExecutor:
@@ -55,9 +74,11 @@ class PipelineExecutor:
         search_request: models.SearchRequest,
         *,
         config: PipelineModeConfig,
+        research_depth: enums.ResearchDepth,
         traces: list[models.BaseTrace],
     ) -> models.SearchResponse:
         pipeline_start = _time.monotonic()
+        soft_timeout = EXECUTOR_SOFT_TIMEOUT_BY_DEPTH[research_depth]
 
         extracted_context = await self._extract_context(search_request.query, traces=traces)
         subject = extracted_context.subject
@@ -83,6 +104,7 @@ class PipelineExecutor:
         plan = await self._plan(
             search_request.query,
             config=config,
+            research_depth=research_depth,
             language=language,
             country_code=country_code,
             today=today,
@@ -99,9 +121,9 @@ class PipelineExecutor:
 
         for wave in range(config.max_review_cycles):
             elapsed = _time.monotonic() - pipeline_start
-            if elapsed > EXECUTOR_SOFT_TIMEOUT:
+            if elapsed > soft_timeout:
                 logger.warning(
-                    f"[Pipeline] Timeout reached ({elapsed:.0f}s > {EXECUTOR_SOFT_TIMEOUT}s)"
+                    f"[Pipeline] Timeout reached ({elapsed:.0f}s > {soft_timeout}s)"
                 )
                 break
 
@@ -141,11 +163,13 @@ class PipelineExecutor:
                 break
 
             elapsed = _time.monotonic() - pipeline_start
-            if elapsed > EXECUTOR_SOFT_TIMEOUT:
+            if elapsed > soft_timeout:
                 logger.warning(f"[Pipeline] Timeout after wave execution ({elapsed:.0f}s)")
                 break
 
-            review = await self._review(search_request.query, state, today, traces=traces)
+            review = await self._review(
+                search_request.query, state, today, research_depth=research_depth, traces=traces
+            )
             logger.debug(
                 f"[Pipeline] Review: sufficient={review.is_sufficient}, "
                 f"gaps={len(review.gaps)}, new_leads={len(review.new_leads)}"
@@ -190,6 +214,7 @@ class PipelineExecutor:
         query: str,
         *,
         config: PipelineModeConfig,
+        research_depth: enums.ResearchDepth,
         language: str,
         country_code: str,
         today: str,
@@ -200,12 +225,15 @@ class PipelineExecutor:
             if isinstance(config, ResearchModeConfig)
             else PLAN_SYSTEM_PROMPT_INVESTIGATE
         )
+        system_content = plan_prompt.format(
+            today=today, language=language, country_code=country_code
+        )
+        plan_augmentation = PLAN_AUGMENTATION_BY_DEPTH.get(research_depth)
+        if plan_augmentation:
+            system_content += "\n\n" + plan_augmentation
+
         messages: list[models.Message] = [
-            models.SystemMessage(
-                content=plan_prompt.format(
-                    today=today, language=language, country_code=country_code
-                )
-            ),
+            models.SystemMessage(content=system_content),
             models.UserMessage(content=PLAN_USER_PROMPT.format(query=query)),
         ]
 
@@ -303,6 +331,7 @@ class PipelineExecutor:
         state: InvestigationState,
         today: str,
         *,
+        research_depth: enums.ResearchDepth,
         traces: list[models.BaseTrace],
     ) -> ReviewOutcome:
         findings_parts: list[str] = []
@@ -322,10 +351,13 @@ class PipelineExecutor:
             f"{i}. {dim}" for i, dim in enumerate(state.plan.dimensions, 1)
         ) if state.plan and state.plan.dimensions else "No dimensions defined."
 
-        system_prompt = REVIEW_SYSTEM_PROMPT.format(
+        system_content = REVIEW_SYSTEM_PROMPT.format(
             today=today,
             remaining_budget=state.budget_summary,
         )
+        review_augmentation = REVIEW_AUGMENTATION_BY_DEPTH.get(research_depth)
+        if review_augmentation:
+            system_content += "\n\n" + review_augmentation
         user_prompt = REVIEW_USER_PROMPT.format(
             query=query,
             dimensions=dimensions_list,
@@ -334,7 +366,7 @@ class PipelineExecutor:
         )
 
         messages: list[models.Message] = [
-            models.SystemMessage(content=system_prompt),
+            models.SystemMessage(content=system_content),
             models.UserMessage(content=user_prompt),
         ]
 

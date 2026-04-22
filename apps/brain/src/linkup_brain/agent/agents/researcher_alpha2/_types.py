@@ -1,15 +1,12 @@
-from enum import StrEnum
-from typing import Literal
+from __future__ import annotations
+
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-from linkup_brain import models
+from linkup_brain import enums, models
 
-
-class ResearchMode(StrEnum):
-    RESEARCH = "research"  # Comprehensive structured reports
-    INVESTIGATE = "investigate"  # Deep investigative entity resolution
-    ANSWER = "answer"  # Precise validated answers
+ResearchMode = enums.ResearchMode
 
 
 class BaseModeConfig(BaseModel):
@@ -28,6 +25,48 @@ class ResearchModeConfig(BaseModeConfig):
     web_search_budget: int = Field(default=120, description="Maximum web search tool calls")
     web_scraper_budget: int = Field(default=90, description="Maximum web scraper tool calls")
 
+    @classmethod
+    def for_depth(cls, depth: enums.ResearchDepth) -> ResearchModeConfig:
+        configs: dict[enums.ResearchDepth, dict[str, Any]] = {
+            enums.ResearchDepth.S: dict(
+                min_sources=2,
+                max_leads=4,
+                max_review_cycles=1,
+                max_leads_per_review=3,
+                scrape_per_lead=2,
+                web_search_budget=20,
+                web_scraper_budget=15,
+            ),
+            enums.ResearchDepth.M: dict(
+                min_sources=3,
+                max_leads=8,
+                max_review_cycles=2,
+                max_leads_per_review=5,
+                scrape_per_lead=3,
+                web_search_budget=50,
+                web_scraper_budget=35,
+            ),
+            enums.ResearchDepth.L: dict(
+                min_sources=4,
+                max_leads=12,
+                max_review_cycles=3,
+                max_leads_per_review=6,
+                scrape_per_lead=4,
+                web_search_budget=80,
+                web_scraper_budget=60,
+            ),
+            enums.ResearchDepth.XL: dict(
+                min_sources=8,
+                max_leads=20,
+                max_review_cycles=6,
+                max_leads_per_review=10,
+                scrape_per_lead=6,
+                web_search_budget=150,
+                web_scraper_budget=100,
+            ),
+        }
+        return cls(**configs[depth])
+
 
 class InvestigateModeConfig(BaseModeConfig):
     max_leads: int = Field(default=10, description="Maximum number of investigation leads")
@@ -37,12 +76,72 @@ class InvestigateModeConfig(BaseModeConfig):
     web_search_budget: int = Field(default=80, description="Maximum web search tool calls")
     web_scraper_budget: int = Field(default=60, description="Maximum web scraper tool calls")
 
+    @classmethod
+    def for_depth(cls, depth: enums.ResearchDepth) -> InvestigateModeConfig:
+        configs: dict[enums.ResearchDepth, dict[str, Any]] = {
+            enums.ResearchDepth.S: dict(
+                max_leads=3,
+                max_review_cycles=1,
+                max_leads_per_review=3,
+                scrape_per_lead=2,
+                web_search_budget=15,
+                web_scraper_budget=10,
+            ),
+            enums.ResearchDepth.M: dict(
+                max_leads=6,
+                max_review_cycles=2,
+                max_leads_per_review=5,
+                scrape_per_lead=2,
+                web_search_budget=35,
+                web_scraper_budget=25,
+            ),
+            enums.ResearchDepth.L: dict(
+                max_leads=8,
+                max_review_cycles=3,
+                max_leads_per_review=6,
+                scrape_per_lead=3,
+                web_search_budget=55,
+                web_scraper_budget=40,
+            ),
+            enums.ResearchDepth.XL: dict(
+                max_leads=15,
+                max_review_cycles=4,
+                max_leads_per_review=8,
+                scrape_per_lead=5,
+                web_search_budget=100,
+                web_scraper_budget=70,
+            ),
+        }
+        return cls(**configs[depth])
+
 
 class AnswerModeConfig(BaseModeConfig):
     max_retrieval_iterations: int = Field(default=30, description="Maximum agentic loop turns")
     max_self_reviews: int = Field(
         default=3, description="Maximum self-review cycles before finalizing"
     )
+
+    @classmethod
+    def for_depth(cls, depth: enums.ResearchDepth) -> AnswerModeConfig:
+        configs: dict[enums.ResearchDepth, dict[str, Any]] = {
+            enums.ResearchDepth.S: dict(
+                max_retrieval_iterations=10,
+                max_self_reviews=1,
+            ),
+            enums.ResearchDepth.M: dict(
+                max_retrieval_iterations=15,
+                max_self_reviews=2,
+            ),
+            enums.ResearchDepth.L: dict(
+                max_retrieval_iterations=25,
+                max_self_reviews=3,
+            ),
+            enums.ResearchDepth.XL: dict(
+                max_retrieval_iterations=40,
+                max_self_reviews=4,
+            ),
+        }
+        return cls(**configs[depth])
 
 
 type ModeConfig = ResearchModeConfig | InvestigateModeConfig | AnswerModeConfig
