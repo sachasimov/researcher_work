@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package brain.v1;
+
+service Brain {
+  rpc Search (SearchRequest) returns (SearchResponse) {}
+}
+
+/////////////////
+//// SEARCH /////
+/////////////////
+
+message SearchRequest {
+  string query = 1;
+  SearchDepth depth = 2;
+  SearchOuptutType output_type = 3;
+  string structured_output_schema = 4; // JSON string representing the structured output schema
+  bool include_images = 5;
+  string from_date = 6; // String representing an ISO 8601 date (YYYY-MM-DD)
+  string to_date = 7; // String representing an ISO 8601 date (YYYY-MM-DD)
+  SearchSettings settings = 8;
+  repeated string exclude_domains = 9;
+  repeated string include_domains = 10;
+  bool include_inline_citations = 11;
+  RequestInfo request_info = 12;
+  int32 max_results = 13;
+  ResearchDepth research_depth = 14;
+}
+
+enum SearchDepth {
+  SEARCH_DEPTH_UNSPECIFIED = 0;
+  SEARCH_DEPTH_STANDARD = 1;
+  SEARCH_DEPTH_DEEP = 2;
+  SEARCH_DEPTH_RESEARCH = 3;
+  SEARCH_DEPTH_FAST = 4;
+}
+
+enum ResearchDepth {
+  RESEARCH_DEPTH_UNSPECIFIED = 0;
+  RESEARCH_DEPTH_S = 1;
+  RESEARCH_DEPTH_M = 2;
+  RESEARCH_DEPTH_L = 3;
+  RESEARCH_DEPTH_XL = 4;
+}
+
+enum SearchOuptutType {
+  SEARCH_OUTPUT_UNSPECIFIED = 0;
+  SEARCH_OUTPUT_SEARCH_RESULTS = 1;
+  SEARCH_OUTPUT_SOURCED_ANSWER = 2;
+  SEARCH_OUTPUT_STRUCTURED = 3;
+}
+
+message SearchSettings {
+  string agent = 1; // The name of the agent to use for the search
+  string policy = 2; // The name of the policy to use for the search
+  string response_formatter = 3; // The name of the response formatter to use for the search
+}
+
+message RequestInfo {
+  string request_id = 1;
+  string organization_id = 2;
+}
+
+message SearchResponse {
+  reserved 3;
+  string answer = 1;
+  repeated SearchResult search_results = 2;
+  string traces = 4;
+  string structured_answer = 5;
+  string brain_version = 6;
+  SearchSettings settings = 7;
+}
+
+message TextResult {
+  string name = 1;
+  string url = 2;
+  string content = 3;
+  string favicon = 4;
+  optional double relevancy_score = 5;
+}
+
+message ImageResult {
+  string name = 1;
+  string url = 2;
+}
+
+message SearchResult {
+  oneof result {
+    TextResult text_result = 1;
+    ImageResult image_result = 2;
+  }
+}
