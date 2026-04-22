@@ -25,6 +25,7 @@ message SearchRequest {
   RequestInfo request_info = 12;
   int32 max_results = 13;
   ResearchDepth research_depth = 14;
+  ResearchMode research_mode = 15;
 }
 
 enum SearchDepth {
@@ -41,6 +42,13 @@ enum ResearchDepth {
   RESEARCH_DEPTH_M = 2;
   RESEARCH_DEPTH_L = 3;
   RESEARCH_DEPTH_XL = 4;
+}
+
+enum ResearchMode {
+  RESEARCH_MODE_UNSPECIFIED = 0;
+  RESEARCH_MODE_ANSWER = 1;
+  RESEARCH_MODE_INVESTIGATE = 2;
+  RESEARCH_MODE_RESEARCH = 3;
 }
 
 enum SearchOuptutType {

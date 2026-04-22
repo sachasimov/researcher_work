@@ -24,33 +24,35 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0b\x62rain.proto\x12\x08\x62rain.v1\"\xc6\x03\n\rSearchRequest\x12\r\n\x05query\x18\x01 \x01(\t\x12$\n\x05\x64\x65pth\x18\x02 \x01(\x0e\x32\x15.brain.v1.SearchDepth\x12/\n\x0boutput_type\x18\x03 \x01(\x0e\x32\x1a.brain.v1.SearchOuptutType\x12 \n\x18structured_output_schema\x18\x04 \x01(\t\x12\x16\n\x0einclude_images\x18\x05 \x01(\x08\x12\x11\n\tfrom_date\x18\x06 \x01(\t\x12\x0f\n\x07to_date\x18\x07 \x01(\t\x12*\n\x08settings\x18\x08 \x01(\x0b\x32\x18.brain.v1.SearchSettings\x12\x17\n\x0f\x65xclude_domains\x18\t \x03(\t\x12\x17\n\x0finclude_domains\x18\n \x03(\t\x12 \n\x18include_inline_citations\x18\x0b \x01(\x08\x12+\n\x0crequest_info\x18\x0c \x01(\x0b\x32\x15.brain.v1.RequestInfo\x12\x13\n\x0bmax_results\x18\r \x01(\x05\x12/\n\x0eresearch_depth\x18\x0e \x01(\x0e\x32\x17.brain.v1.ResearchDepth\"K\n\x0eSearchSettings\x12\r\n\x05\x61gent\x18\x01 \x01(\t\x12\x0e\n\x06policy\x18\x02 \x01(\t\x12\x1a\n\x12response_formatter\x18\x03 \x01(\t\":\n\x0bRequestInfo\x12\x12\n\nrequest_id\x18\x01 \x01(\t\x12\x17\n\x0forganization_id\x18\x02 \x01(\t\"\xc4\x01\n\x0eSearchResponse\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12.\n\x0esearch_results\x18\x02 \x03(\x0b\x32\x16.brain.v1.SearchResult\x12\x0e\n\x06traces\x18\x04 \x01(\t\x12\x19\n\x11structured_answer\x18\x05 \x01(\t\x12\x15\n\rbrain_version\x18\x06 \x01(\t\x12*\n\x08settings\x18\x07 \x01(\x0b\x32\x18.brain.v1.SearchSettingsJ\x04\x08\x03\x10\x04\"{\n\nTextResult\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x0f\n\x07\x66\x61vicon\x18\x04 \x01(\t\x12\x1c\n\x0frelevancy_score\x18\x05 \x01(\x01H\x00\x88\x01\x01\x42\x12\n\x10_relevancy_score\"(\n\x0bImageResult\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03url\x18\x02 \x01(\t\"t\n\x0cSearchResult\x12+\n\x0btext_result\x18\x01 \x01(\x0b\x32\x14.brain.v1.TextResultH\x00\x12-\n\x0cimage_result\x18\x02 \x01(\x0b\x32\x15.brain.v1.ImageResultH\x00\x42\x08\n\x06result*\x8f\x01\n\x0bSearchDepth\x12\x1c\n\x18SEARCH_DEPTH_UNSPECIFIED\x10\x00\x12\x19\n\x15SEARCH_DEPTH_STANDARD\x10\x01\x12\x15\n\x11SEARCH_DEPTH_DEEP\x10\x02\x12\x19\n\x15SEARCH_DEPTH_RESEARCH\x10\x03\x12\x15\n\x11SEARCH_DEPTH_FAST\x10\x04*\x88\x01\n\rResearchDepth\x12\x1e\n\x1aRESEARCH_DEPTH_UNSPECIFIED\x10\x00\x12\x14\n\x10RESEARCH_DEPTH_S\x10\x01\x12\x14\n\x10RESEARCH_DEPTH_M\x10\x02\x12\x14\n\x10RESEARCH_DEPTH_L\x10\x03\x12\x15\n\x11RESEARCH_DEPTH_XL\x10\x04*\x93\x01\n\x10SearchOuptutType\x12\x1d\n\x19SEARCH_OUTPUT_UNSPECIFIED\x10\x00\x12 \n\x1cSEARCH_OUTPUT_SEARCH_RESULTS\x10\x01\x12 \n\x1cSEARCH_OUTPUT_SOURCED_ANSWER\x10\x02\x12\x1c\n\x18SEARCH_OUTPUT_STRUCTURED\x10\x03\x32\x46\n\x05\x42rain\x12=\n\x06Search\x12\x17.brain.v1.SearchRequest\x1a\x18.brain.v1.SearchResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0b\x62rain.proto\x12\x08\x62rain.v1\"\xf5\x03\n\rSearchRequest\x12\r\n\x05query\x18\x01 \x01(\t\x12$\n\x05\x64\x65pth\x18\x02 \x01(\x0e\x32\x15.brain.v1.SearchDepth\x12/\n\x0boutput_type\x18\x03 \x01(\x0e\x32\x1a.brain.v1.SearchOuptutType\x12 \n\x18structured_output_schema\x18\x04 \x01(\t\x12\x16\n\x0einclude_images\x18\x05 \x01(\x08\x12\x11\n\tfrom_date\x18\x06 \x01(\t\x12\x0f\n\x07to_date\x18\x07 \x01(\t\x12*\n\x08settings\x18\x08 \x01(\x0b\x32\x18.brain.v1.SearchSettings\x12\x17\n\x0f\x65xclude_domains\x18\t \x03(\t\x12\x17\n\x0finclude_domains\x18\n \x03(\t\x12 \n\x18include_inline_citations\x18\x0b \x01(\x08\x12+\n\x0crequest_info\x18\x0c \x01(\x0b\x32\x15.brain.v1.RequestInfo\x12\x13\n\x0bmax_results\x18\r \x01(\x05\x12/\n\x0eresearch_depth\x18\x0e \x01(\x0e\x32\x17.brain.v1.ResearchDepth\x12-\n\rresearch_mode\x18\x0f \x01(\x0e\x32\x16.brain.v1.ResearchMode\"K\n\x0eSearchSettings\x12\r\n\x05\x61gent\x18\x01 \x01(\t\x12\x0e\n\x06policy\x18\x02 \x01(\t\x12\x1a\n\x12response_formatter\x18\x03 \x01(\t\":\n\x0bRequestInfo\x12\x12\n\nrequest_id\x18\x01 \x01(\t\x12\x17\n\x0forganization_id\x18\x02 \x01(\t\"\xc4\x01\n\x0eSearchResponse\x12\x0e\n\x06\x61nswer\x18\x01 \x01(\t\x12.\n\x0esearch_results\x18\x02 \x03(\x0b\x32\x16.brain.v1.SearchResult\x12\x0e\n\x06traces\x18\x04 \x01(\t\x12\x19\n\x11structured_answer\x18\x05 \x01(\t\x12\x15\n\rbrain_version\x18\x06 \x01(\t\x12*\n\x08settings\x18\x07 \x01(\x0b\x32\x18.brain.v1.SearchSettingsJ\x04\x08\x03\x10\x04\"{\n\nTextResult\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x0f\n\x07\x66\x61vicon\x18\x04 \x01(\t\x12\x1c\n\x0frelevancy_score\x18\x05 \x01(\x01H\x00\x88\x01\x01\x42\x12\n\x10_relevancy_score\"(\n\x0bImageResult\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0b\n\x03url\x18\x02 \x01(\t\"t\n\x0cSearchResult\x12+\n\x0btext_result\x18\x01 \x01(\x0b\x32\x14.brain.v1.TextResultH\x00\x12-\n\x0cimage_result\x18\x02 \x01(\x0b\x32\x15.brain.v1.ImageResultH\x00\x42\x08\n\x06result*\x8f\x01\n\x0bSearchDepth\x12\x1c\n\x18SEARCH_DEPTH_UNSPECIFIED\x10\x00\x12\x19\n\x15SEARCH_DEPTH_STANDARD\x10\x01\x12\x15\n\x11SEARCH_DEPTH_DEEP\x10\x02\x12\x19\n\x15SEARCH_DEPTH_RESEARCH\x10\x03\x12\x15\n\x11SEARCH_DEPTH_FAST\x10\x04*\x88\x01\n\rResearchDepth\x12\x1e\n\x1aRESEARCH_DEPTH_UNSPECIFIED\x10\x00\x12\x14\n\x10RESEARCH_DEPTH_S\x10\x01\x12\x14\n\x10RESEARCH_DEPTH_M\x10\x02\x12\x14\n\x10RESEARCH_DEPTH_L\x10\x03\x12\x15\n\x11RESEARCH_DEPTH_XL\x10\x04*\x82\x01\n\x0cResearchMode\x12\x1d\n\x19RESEARCH_MODE_UNSPECIFIED\x10\x00\x12\x18\n\x14RESEARCH_MODE_ANSWER\x10\x01\x12\x1d\n\x19RESEARCH_MODE_INVESTIGATE\x10\x02\x12\x1a\n\x16RESEARCH_MODE_RESEARCH\x10\x03*\x93\x01\n\x10SearchOuptutType\x12\x1d\n\x19SEARCH_OUTPUT_UNSPECIFIED\x10\x00\x12 \n\x1cSEARCH_OUTPUT_SEARCH_RESULTS\x10\x01\x12 \n\x1cSEARCH_OUTPUT_SOURCED_ANSWER\x10\x02\x12\x1c\n\x18SEARCH_OUTPUT_STRUCTURED\x10\x03\x32\x46\n\x05\x42rain\x12=\n\x06Search\x12\x17.brain.v1.SearchRequest\x1a\x18.brain.v1.SearchResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'brain_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_SEARCHDEPTH']._serialized_start=1104
-  _globals['_SEARCHDEPTH']._serialized_end=1247
-  _globals['_RESEARCHDEPTH']._serialized_start=1250
-  _globals['_RESEARCHDEPTH']._serialized_end=1386
-  _globals['_SEARCHOUPTUTTYPE']._serialized_start=1389
-  _globals['_SEARCHOUPTUTTYPE']._serialized_end=1536
+  _globals['_SEARCHDEPTH']._serialized_start=1151
+  _globals['_SEARCHDEPTH']._serialized_end=1294
+  _globals['_RESEARCHDEPTH']._serialized_start=1297
+  _globals['_RESEARCHDEPTH']._serialized_end=1433
+  _globals['_RESEARCHMODE']._serialized_start=1436
+  _globals['_RESEARCHMODE']._serialized_end=1566
+  _globals['_SEARCHOUPTUTTYPE']._serialized_start=1569
+  _globals['_SEARCHOUPTUTTYPE']._serialized_end=1716
   _globals['_SEARCHREQUEST']._serialized_start=26
-  _globals['_SEARCHREQUEST']._serialized_end=480
-  _globals['_SEARCHSETTINGS']._serialized_start=482
-  _globals['_SEARCHSETTINGS']._serialized_end=557
-  _globals['_REQUESTINFO']._serialized_start=559
-  _globals['_REQUESTINFO']._serialized_end=617
-  _globals['_SEARCHRESPONSE']._serialized_start=620
-  _globals['_SEARCHRESPONSE']._serialized_end=816
-  _globals['_TEXTRESULT']._serialized_start=818
-  _globals['_TEXTRESULT']._serialized_end=941
-  _globals['_IMAGERESULT']._serialized_start=943
-  _globals['_IMAGERESULT']._serialized_end=983
-  _globals['_SEARCHRESULT']._serialized_start=985
-  _globals['_SEARCHRESULT']._serialized_end=1101
-  _globals['_BRAIN']._serialized_start=1538
-  _globals['_BRAIN']._serialized_end=1608
+  _globals['_SEARCHREQUEST']._serialized_end=527
+  _globals['_SEARCHSETTINGS']._serialized_start=529
+  _globals['_SEARCHSETTINGS']._serialized_end=604
+  _globals['_REQUESTINFO']._serialized_start=606
+  _globals['_REQUESTINFO']._serialized_end=664
+  _globals['_SEARCHRESPONSE']._serialized_start=667
+  _globals['_SEARCHRESPONSE']._serialized_end=863
+  _globals['_TEXTRESULT']._serialized_start=865
+  _globals['_TEXTRESULT']._serialized_end=988
+  _globals['_IMAGERESULT']._serialized_start=990
+  _globals['_IMAGERESULT']._serialized_end=1030
+  _globals['_SEARCHRESULT']._serialized_start=1032
+  _globals['_SEARCHRESULT']._serialized_end=1148
+  _globals['_BRAIN']._serialized_start=1718
+  _globals['_BRAIN']._serialized_end=1788
 # @@protoc_insertion_point(module_scope)

@@ -187,6 +187,7 @@ export class TasksService {
             ...task.input,
             ...this.getResearchTaskDefaultProperties(),
             researchDepth: task.input.depth ?? Searcher.ResearchDepth.L,
+            researchMode: task.input.mode,
           },
           type: task.type,
         };

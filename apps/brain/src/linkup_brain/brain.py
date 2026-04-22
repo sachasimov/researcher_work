@@ -40,6 +40,12 @@ RESEARCH_DEPTH_PB_TO_RESEARCH_DEPTH: dict[int, enums.ResearchDepth] = {
     3: enums.ResearchDepth.L,
     4: enums.ResearchDepth.XL,
 }
+RESEARCH_MODE_PB_TO_RESEARCH_MODE: dict[int, enums.ResearchMode | None] = {
+    0: None,  # Unspecified → auto-classify
+    1: enums.ResearchMode.ANSWER,
+    2: enums.ResearchMode.INVESTIGATE,
+    3: enums.ResearchMode.RESEARCH,
+}
 
 
 class Brain:
@@ -186,6 +192,9 @@ class BrainServicer(brain_pb2_grpc.BrainServicer):
                 max_results=request.max_results or None,
                 research_depth=RESEARCH_DEPTH_PB_TO_RESEARCH_DEPTH.get(
                     request.research_depth, enums.ResearchDepth.L
+                ),
+                research_mode=RESEARCH_MODE_PB_TO_RESEARCH_MODE.get(
+                    request.research_mode, None
                 ),
                 settings=models.SearchSettings(
                     agent_name=request.settings.agent,

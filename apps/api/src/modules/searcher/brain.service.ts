@@ -69,6 +69,7 @@ export class BrainService implements OnModuleInit {
       includeInlineCitations,
       maxResults,
       researchDepth,
+      researchMode,
     }: Searcher.SearchInput,
   ): SearchRequest {
     return {
@@ -91,6 +92,7 @@ export class BrainService implements OnModuleInit {
       toDate,
       ...(maxResults && { maxResults }),
       ...(researchDepth && { researchDepth: this.toBrainResearchDepth(researchDepth) }),
+      ...(researchMode && { researchMode: this.toBrainResearchMode(researchMode) }),
     };
   }
 
@@ -158,6 +160,17 @@ export class BrainService implements OnModuleInit {
     }
   }
 
+  private toBrainResearchMode(researchMode: Searcher.ResearchMode): ResearchModeProto {
+    switch (researchMode) {
+      case Searcher.ResearchMode.Answer:
+        return 'RESEARCH_MODE_ANSWER';
+      case Searcher.ResearchMode.Investigate:
+        return 'RESEARCH_MODE_INVESTIGATE';
+      case Searcher.ResearchMode.Research:
+        return 'RESEARCH_MODE_RESEARCH';
+    }
+  }
+
   private toBrainOutputType(outputType: Searcher.SearchOutputType): OutputType {
     switch (outputType) {
       case Searcher.SearchOutputType.SearchResults:
@@ -216,6 +229,11 @@ type ResearchDepthProto =
   | 'RESEARCH_DEPTH_L'
   | 'RESEARCH_DEPTH_XL';
 
+type ResearchModeProto =
+  | 'RESEARCH_MODE_ANSWER'
+  | 'RESEARCH_MODE_INVESTIGATE'
+  | 'RESEARCH_MODE_RESEARCH';
+
 type OutputType =
   | 'SEARCH_OUTPUT_SEARCH_RESULTS'
   | 'SEARCH_OUTPUT_SOURCED_ANSWER'
@@ -234,6 +252,7 @@ type SearchRequest = {
   requestInfo: RequestInfo;
   maxResults?: number;
   researchDepth?: ResearchDepthProto;
+  researchMode?: ResearchModeProto;
 };
 
 type RequestInfo = {

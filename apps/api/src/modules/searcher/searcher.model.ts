@@ -24,6 +24,15 @@ export namespace Searcher {
   export const ResearchDepthSchema = z.enum(ResearchDepth);
   export type ResearchDepth = z.infer<typeof ResearchDepthSchema>;
 
+  export const ResearchMode = {
+    Answer: 'answer',
+    Investigate: 'investigate',
+    Research: 'research',
+  } as const;
+
+  export const ResearchModeSchema = z.enum(ResearchMode);
+  export type ResearchMode = z.infer<typeof ResearchModeSchema>;
+
   export const SearchOutputType = {
     SearchResults: 'searchResults',
     SourcedAnswer: 'sourcedAnswer',
@@ -45,6 +54,7 @@ export namespace Searcher {
     outputType: SearchOutputTypeSchema,
     q: z.string(),
     researchDepth: ResearchDepthSchema.optional(),
+    researchMode: ResearchModeSchema.optional(),
     structuredOutputSchema: z.record(z.string(), z.unknown()).optional(),
     toDate: z.iso.date(),
   });

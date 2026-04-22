@@ -36,6 +36,7 @@ class SearchRequest(BaseModel):
     include_inline_citations: bool = False
     max_results: int | None = Field(default=None, gt=0)
     research_depth: enums.ResearchDepth = Field(default=enums.ResearchDepth.L)
+    research_mode: enums.ResearchMode | None = Field(default=None)
     settings: SearchSettings
     request_info: RequestInfo | None = None
     toolbox_cache: ToolboxCache = ToolboxCache()

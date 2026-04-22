@@ -90,9 +90,10 @@ export namespace Tasks {
 
   export type ResearchSubmissionInput = Omit<
     ResearchInput,
-    'depth' | 'includeInlineCitations' | 'includeSources' | 'maxResults' | 'researchDepth'
+    'depth' | 'includeInlineCitations' | 'includeSources' | 'maxResults' | 'researchDepth' | 'researchMode'
   > & {
     depth?: Searcher.ResearchDepth;
+    mode?: Searcher.ResearchMode;
   };
 
   export type Submission =

@@ -62,6 +62,31 @@ const createResearchInputSchema = ({
             Searcher.ResearchDepth.XL,
           ],
         }),
+      mode: z
+        .enum(
+          [
+            Searcher.ResearchMode.Answer,
+            Searcher.ResearchMode.Investigate,
+            Searcher.ResearchMode.Research,
+          ],
+          {
+            error: `mode must be one of the following values: ${[
+              Searcher.ResearchMode.Answer,
+              Searcher.ResearchMode.Investigate,
+              Searcher.ResearchMode.Research,
+            ].join(', ')}`,
+          },
+        )
+        .optional()
+        .meta({
+          description:
+            'The research mode. `answer` returns precise, validated answers to direct questions; `investigate` performs deep entity exploration with background and connections; `research` produces comprehensive multi-dimensional reports. When omitted, the mode is auto-classified from the query.',
+          enum: [
+            Searcher.ResearchMode.Answer,
+            Searcher.ResearchMode.Investigate,
+            Searcher.ResearchMode.Research,
+          ],
+        }),
       outputType: z
         .enum([Searcher.SearchOutputType.SourcedAnswer, Searcher.SearchOutputType.Structured], {
           error: `outputType must be one of the following values: ${[

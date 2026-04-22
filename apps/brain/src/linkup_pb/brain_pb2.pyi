@@ -61,6 +61,25 @@ RESEARCH_DEPTH_L: ResearchDepth.ValueType  # 3
 RESEARCH_DEPTH_XL: ResearchDepth.ValueType  # 4
 Global___ResearchDepth: _TypeAlias = ResearchDepth  # noqa: Y015
 
+class _ResearchMode:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _ResearchModeEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_ResearchMode.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    RESEARCH_MODE_UNSPECIFIED: _ResearchMode.ValueType  # 0
+    RESEARCH_MODE_ANSWER: _ResearchMode.ValueType  # 1
+    RESEARCH_MODE_INVESTIGATE: _ResearchMode.ValueType  # 2
+    RESEARCH_MODE_RESEARCH: _ResearchMode.ValueType  # 3
+
+class ResearchMode(_ResearchMode, metaclass=_ResearchModeEnumTypeWrapper): ...
+
+RESEARCH_MODE_UNSPECIFIED: ResearchMode.ValueType  # 0
+RESEARCH_MODE_ANSWER: ResearchMode.ValueType  # 1
+RESEARCH_MODE_INVESTIGATE: ResearchMode.ValueType  # 2
+RESEARCH_MODE_RESEARCH: ResearchMode.ValueType  # 3
+Global___ResearchMode: _TypeAlias = ResearchMode  # noqa: Y015
+
 class _SearchOuptutType:
     ValueType = _typing.NewType("ValueType", _builtins.int)
     V: _TypeAlias = ValueType  # noqa: Y015
@@ -103,6 +122,7 @@ class SearchRequest(_message.Message):
     REQUEST_INFO_FIELD_NUMBER: _builtins.int
     MAX_RESULTS_FIELD_NUMBER: _builtins.int
     RESEARCH_DEPTH_FIELD_NUMBER: _builtins.int
+    RESEARCH_MODE_FIELD_NUMBER: _builtins.int
     query: _builtins.str
     depth: Global___SearchDepth.ValueType
     output_type: Global___SearchOuptutType.ValueType
@@ -116,6 +136,7 @@ class SearchRequest(_message.Message):
     include_inline_citations: _builtins.bool
     max_results: _builtins.int
     research_depth: Global___ResearchDepth.ValueType
+    research_mode: Global___ResearchMode.ValueType
     @_builtins.property
     def settings(self) -> Global___SearchSettings: ...
     @_builtins.property
@@ -141,10 +162,11 @@ class SearchRequest(_message.Message):
         request_info: Global___RequestInfo | None = ...,
         max_results: _builtins.int = ...,
         research_depth: Global___ResearchDepth.ValueType = ...,
+        research_mode: Global___ResearchMode.ValueType = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["request_info", b"request_info", "settings", b"settings"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["depth", b"depth", "exclude_domains", b"exclude_domains", "from_date", b"from_date", "include_domains", b"include_domains", "include_images", b"include_images", "include_inline_citations", b"include_inline_citations", "max_results", b"max_results", "output_type", b"output_type", "query", b"query", "request_info", b"request_info", "research_depth", b"research_depth", "settings", b"settings", "structured_output_schema", b"structured_output_schema", "to_date", b"to_date"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["depth", b"depth", "exclude_domains", b"exclude_domains", "from_date", b"from_date", "include_domains", b"include_domains", "include_images", b"include_images", "include_inline_citations", b"include_inline_citations", "max_results", b"max_results", "output_type", b"output_type", "query", b"query", "request_info", b"request_info", "research_depth", b"research_depth", "research_mode", b"research_mode", "settings", b"settings", "structured_output_schema", b"structured_output_schema", "to_date", b"to_date"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___SearchRequest: _TypeAlias = SearchRequest  # noqa: Y015

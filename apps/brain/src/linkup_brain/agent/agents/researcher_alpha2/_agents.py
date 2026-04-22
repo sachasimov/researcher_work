@@ -55,12 +55,15 @@ class _BaseResearchAlpha2Agent(BaseAgent):
         traces: list[models.BaseTrace] = []
         research_depth = request.research_depth
 
-        mode: ResearchMode = await self._classify_mode(
-            request.query,
-            output_type=request.output_type,
-            structured_output_schema=request.structured_output_schema,
-            traces=traces,
-        )
+        if request.research_mode is not None:
+            mode = ResearchMode(request.research_mode)
+        else:
+            mode = await self._classify_mode(
+                request.query,
+                output_type=request.output_type,
+                structured_output_schema=request.structured_output_schema,
+                traces=traces,
+            )
         logger.debug(f"[Research] Starting (mode={mode}, research_depth={research_depth})")
 
         if mode == ResearchMode.ANSWER:

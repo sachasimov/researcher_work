@@ -29,6 +29,12 @@ class ResearchDepth(StrEnum):
     XL = "xl"
 
 
+class ResearchMode(StrEnum):
+    ANSWER = "answer"
+    INVESTIGATE = "investigate"
+    RESEARCH = "research"
+
+
 class SearchOutputType(StrEnum):
     SEARCH_RESULTS = "searchResults"
     SOURCED_ANSWER = "sourcedAnswer"
